@@ -1,9 +1,22 @@
 import { Link, NavLink } from "react-router-dom";
 import logo from "../../../assets/logo.svg"
+import { useContext } from "react";
+import { AuthContext } from "../../../Provider/AuthProvider/AuthProvider";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Navbar = () => {
 
-    // Home          About          Services          Blog          Contact
+    const { user, logout } = useContext(AuthContext);
+
+    const handelLogout = () => {
+        logout()
+        .then(() => {
+            toast('Log Out Successfully')
+        })
+        .catch(err => console.error(err.message))
+    }
 
     const links = <>
         <li><NavLink
@@ -46,6 +59,31 @@ const Navbar = () => {
         >
             Contact
         </NavLink></li>
+        <li>
+            {
+                user && <NavLink
+                to="/cart"
+                className={({ isActive, isPending }) =>
+                    isPending ? "pending" : isActive ? "text-lg font-bold underline text-[#FF3811]" : ""
+                }
+            >
+                My Cart
+            </NavLink>
+            }
+        </li>
+        <li>
+            {
+                user ? <button onClick={handelLogout}>Log Out</button> :
+                    <NavLink
+                        to="/login"
+                        className={({ isActive, isPending }) =>
+                            isPending ? "pending" : isActive ? "text-lg font-bold underline text-[#FF3811]" : ""
+                        }
+                    >
+                        Login
+                    </NavLink>
+            }
+        </li>
     </>
 
 
@@ -70,6 +108,7 @@ const Navbar = () => {
             <div className="navbar-end">
                 <button className="btn h-auto btn-outline normal-case text-lg font-semibold px-7 py-4 hover:border-[#FF3811] text-[#FF3811] hover:bg-[#FF4811] hover:text-white" >Appointment</button>
             </div>
+            <ToastContainer/>
         </div>
     );
 };
