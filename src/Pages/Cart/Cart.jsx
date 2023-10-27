@@ -5,18 +5,25 @@ import { PiArrowBendUpLeftFill } from 'react-icons/pi';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { IoMdCloseCircle } from 'react-icons/io';
 import Swal from "sweetalert2";
+import axios from "axios";
 
 const Cart = () => {
     const { user } = useContext(AuthContext);
     const [carts, setCarts] = useState([]);
     const url = `http://localhost:5000/checkouts?email=${user.email}`
     useEffect(() => {
-        fetch(url)
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-                setCarts(data);
+
+        axios.get(url, { withCredentials: true })
+            .then(res => {
+                setCarts(res.data)
             })
+
+        // fetch(url)
+        //     .then(res => res.json())
+        //     .then(data => {
+        //         console.log(data);
+        //         setCarts(data);
+        //     })
     }, [url])
     const handelDelete = id => {
         Swal.fire({
@@ -59,10 +66,10 @@ const Cart = () => {
             .then(res => res.json())
             .then(data => {
                 console.log(data);
-                if(data.modifiedCount > 0){
+                if (data.modifiedCount > 0) {
                     const remaining = carts.filter(cart => cart._id !== id);
                     const update = carts.find(cart => cart._id === id);
-                    update.status = 'Confirm'; 
+                    update.status = 'Confirm';
                     const updateCheckout = [update, ...remaining];
                     setCarts(updateCheckout)
                 }
@@ -109,8 +116,8 @@ const Cart = () => {
                                 <td className="text-xl font-medium text-[#2D2D2D] text-end">{cart.date}</td>
                                 <th className="text-end">
                                     {
-                                        cart.status === 'Confirm' ? <button className="btn btn-outline text-xl font-semibold text-[#29B170]  rounded-2xl py-2.5 px-5 hover:bg-[#29B170] hover:text-white hover:border-[#29B170] normal-case">Approved</button> : 
-                                        <button onClick={() => handelConfirm(cart._id)} className="text-xl font-semibold text-white bg-[#FF3811] rounded-2xl py-2.5 px-5">Pending</button>
+                                        cart.status === 'Confirm' ? <button className="btn btn-outline text-xl font-semibold text-[#29B170]  rounded-2xl py-2.5 px-5 hover:bg-[#29B170] hover:text-white hover:border-[#29B170] normal-case">Approved</button> :
+                                            <button onClick={() => handelConfirm(cart._id)} className="text-xl font-semibold text-white bg-[#FF3811] rounded-2xl py-2.5 px-5">Pending</button>
                                     }
                                 </th>
                             </tr>)

@@ -1,12 +1,14 @@
 import { FaFacebook, FaGoogle, FaLinkedin } from "react-icons/fa6";
 import img1 from "../../assets/images/login/login.svg"
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../Provider/AuthProvider/AuthProvider";
 
 const SingUp = () => {
 
     const { createUser } = useContext(AuthContext);
+    const location = useLocation();
+    const Navigate = useNavigate();
 
     const handelSingUp = e => {
         e.preventDefault();
@@ -18,7 +20,10 @@ const SingUp = () => {
         console.log(name, email, password);
 
         createUser(email, password)
-            .then(res => console.log(res.user))
+            .then(res => {
+                console.log(res.user);
+                Navigate(location?.state ? location.state : "/");
+            })
             .catch(error => console.error(error.message))
     }
 
